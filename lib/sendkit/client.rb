@@ -6,7 +6,7 @@ require "uri"
 
 module SendKit
   class Client
-    DEFAULT_BASE_URL = "https://api.sendkit.com"
+    DEFAULT_BASE_URL = "https://api.sendkit.dev"
 
     attr_reader :emails
 
