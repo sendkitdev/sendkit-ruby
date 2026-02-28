@@ -8,3 +8,5 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: :test
+
+require "bundler/gem_tasks"
