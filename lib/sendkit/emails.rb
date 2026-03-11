@@ -19,11 +19,11 @@ module SendKit
       payload[:scheduled_at] = scheduled_at if scheduled_at
       payload[:attachments] = attachments if attachments
 
-      @client.post("/v1/emails", payload)
+      @client.post("/emails", payload)
     end
 
     def send_mime(envelope_from:, envelope_to:, raw_message:)
-      @client.post("/v1/emails/mime", {
+      @client.post("/emails/mime", {
         envelope_from: envelope_from,
         envelope_to: envelope_to,
         raw_message: raw_message

@@ -82,7 +82,7 @@ class TestEmailsSend < Minitest::Test
     )
 
     assert_equal "email-uuid-123", result["id"]
-    assert_equal "/v1/emails", captured[:path]
+    assert_equal "/emails", captured[:path]
     assert_equal "POST", captured[:method]
     assert_equal "Bearer sk_test_123", captured[:auth]
     assert_equal "sender@example.com", captured[:body]["from"]
@@ -131,7 +131,7 @@ class TestEmailsSend < Minitest::Test
     )
 
     assert_equal "mime-uuid-789", result["id"]
-    assert_equal "/v1/emails/mime", captured[:path]
+    assert_equal "/emails/mime", captured[:path]
     assert_equal "sender@example.com", captured[:body]["envelope_from"]
     assert_equal "recipient@example.com", captured[:body]["envelope_to"]
   ensure
