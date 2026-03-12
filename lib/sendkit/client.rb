@@ -30,12 +30,16 @@ module SendKit
         http.request(request)
       end
 
-      parsed = JSON.parse(response.body)
+      begin
+        parsed = JSON.parse(response.body)
+      rescue JSON::ParserError
+        parsed = {}
+      end
 
       unless response.is_a?(Net::HTTPSuccess)
         raise Error.new(
           parsed["message"] || response.message,
-          name: parsed["name"] || "application_error",
+          name: parsed["name"] || "unknown_error",
           status_code: response.code.to_i
         )
       end
