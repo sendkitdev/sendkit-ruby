@@ -11,9 +11,15 @@ module SendKit
       payload = {from: from, to: to, subject: subject}
       payload[:html] = html if html
       payload[:text] = text if text
-      payload[:cc] = cc if cc
-      payload[:bcc] = bcc if bcc
-      payload[:reply_to] = reply_to if reply_to
+      if cc
+        payload[:cc] = cc.is_a?(String) ? [cc] : cc
+      end
+      if bcc
+        payload[:bcc] = bcc.is_a?(String) ? [bcc] : bcc
+      end
+      if reply_to
+        payload[:reply_to] = reply_to.is_a?(String) ? [reply_to] : reply_to
+      end
       payload[:headers] = headers if headers
       payload[:tags] = tags if tags
       payload[:scheduled_at] = scheduled_at if scheduled_at

@@ -109,7 +109,7 @@ class TestEmailsSend < Minitest::Test
       scheduled_at: "2026-03-01T10:00:00Z"
     )
 
-    assert_equal "reply@example.com", captured[:body]["reply_to"]
+    assert_equal ["reply@example.com"], captured[:body]["reply_to"]
     assert_equal "2026-03-01T10:00:00Z", captured[:body]["scheduled_at"]
   ensure
     server&.close
@@ -238,6 +238,90 @@ class TestEmailsSend < Minitest::Test
     )
 
     assert_equal ["bcc1@example.com", "bcc2@example.com"], captured[:body]["bcc"]
+  ensure
+    server&.close
+  end
+
+  def test_send_with_cc_as_string
+    captured = {}
+    server, url, = start_mock_server do |_request_line, _headers, body|
+      captured[:body] = JSON.parse(body)
+      [200, JSON.generate({"id" => "email-cc-string"})]
+    end
+
+    client = SendKit::Client.new("sk_test_123", base_url: url)
+    client.emails.send(
+      from: "sender@example.com",
+      to: "recipient@example.com",
+      subject: "Test",
+      html: "<p>Hi</p>",
+      cc: "cc@example.com"
+    )
+
+    assert_equal ["cc@example.com"], captured[:body]["cc"]
+  ensure
+    server&.close
+  end
+
+  def test_send_with_bcc_as_string
+    captured = {}
+    server, url, = start_mock_server do |_request_line, _headers, body|
+      captured[:body] = JSON.parse(body)
+      [200, JSON.generate({"id" => "email-bcc-string"})]
+    end
+
+    client = SendKit::Client.new("sk_test_123", base_url: url)
+    client.emails.send(
+      from: "sender@example.com",
+      to: "recipient@example.com",
+      subject: "Test",
+      html: "<p>Hi</p>",
+      bcc: "bcc@example.com"
+    )
+
+    assert_equal ["bcc@example.com"], captured[:body]["bcc"]
+  ensure
+    server&.close
+  end
+
+  def test_send_with_reply_to_as_string
+    captured = {}
+    server, url, = start_mock_server do |_request_line, _headers, body|
+      captured[:body] = JSON.parse(body)
+      [200, JSON.generate({"id" => "email-reply-to-string"})]
+    end
+
+    client = SendKit::Client.new("sk_test_123", base_url: url)
+    client.emails.send(
+      from: "sender@example.com",
+      to: "recipient@example.com",
+      subject: "Test",
+      html: "<p>Hi</p>",
+      reply_to: "reply@example.com"
+    )
+
+    assert_equal ["reply@example.com"], captured[:body]["reply_to"]
+  ensure
+    server&.close
+  end
+
+  def test_send_with_reply_to_as_array
+    captured = {}
+    server, url, = start_mock_server do |_request_line, _headers, body|
+      captured[:body] = JSON.parse(body)
+      [200, JSON.generate({"id" => "email-reply-to-array"})]
+    end
+
+    client = SendKit::Client.new("sk_test_123", base_url: url)
+    client.emails.send(
+      from: "sender@example.com",
+      to: "recipient@example.com",
+      subject: "Test",
+      html: "<p>Hi</p>",
+      reply_to: ["reply1@example.com", "reply2@example.com"]
+    )
+
+    assert_equal ["reply1@example.com", "reply2@example.com"], captured[:body]["reply_to"]
   ensure
     server&.close
   end
